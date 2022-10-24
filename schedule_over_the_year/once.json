@@ -1,0 +1,6 @@
+{"2022":
+{"22.10":
+[{"time":"11:30", "func": "play_video", "arguments":  ["VID_AUD_FILES\\Futon.mp4"], "tags": ["once", "hm", "alarm_to_go"]}
+]
+}
+}
