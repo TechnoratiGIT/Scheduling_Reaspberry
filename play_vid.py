@@ -1,41 +1,42 @@
 import subprocess
-import time
 from pymediainfo import MediaInfo
+import random
 
-vlc = r"C:\Program Files\VLC Plus Player\vlc.exe"
+vlc_ = r"C:\Program Files (x86)\VideoLAN\VLC\vlc.exe"  # vlc player save location (Windows)
 
 
 def get_clip_time(file: str):
-    media_info = MediaInfo.parse(file)
-    duration_in_ms = media_info.tracks[0].duration
+    """
+    :param file: location of file
+    :return: length of (video or audio) file in seconds
+    """
+    duration_in_ms = MediaInfo.parse(file).tracks[0].duration
     return (duration_in_ms - duration_in_ms % 1000) / 1000
 
 
-def play_file(file: str, prog: str = vlc, play_time: int = 0, buffer: int = 0):
-    if play_time == 0:
-        play_time = get_clip_time(file)
-        print(play_time)
-    play = subprocess.Popen([prog, file])
-    return play, play_time + buffer
-
-
-def terminate_file(play_object):
-    play_object.terminate()
-
-
-def wait_play_time(time_):
-    time.sleep(time_)
-
-
-def test(text):
-    print(text)
+def play_file(file: (str, list), program: str = vlc_, play_time: int = 0):
+    """
+    Plays an audio or video file with the vlc player,
+    if multiple files are given it chooses one randomly
+    :param file: location of file or list of locations of multiple files
+    :param program: program to play the file
+    :param play_time: play time in seconds
+    """
+    """get a random file out of list"""
+    if file is list:
+        file = random.choice(file)
+    """set the playtime"""
+    full_time = get_clip_time(file)
+    if full_time < play_time or play_time == 0:
+        play_time = full_time
+    print(play_time)
+    """play the file"""
+    subprocess.Popen([program, file, "--run-time=" + str(play_time), "vlc://quit"])
 
 
 if __name__ == "__main__":
-    # File (a CAD in this case) and Program (desired CAD software in this case) # r: raw strings
-    futon = r"VID_AUD_FILES\Futon.mp4"
-    info = play_file(futon, buffer=1)
-    wait_play_time(info[1])
-    terminate_file(info[0])
+    pass  # put something in if you want
+
 else:
     print("::::  imported play vid  ::::")
+   
